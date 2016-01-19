@@ -10,9 +10,9 @@ defmodule OauthClientCredentials do
     fetch_items token from_date
   end
 
-  def get_token do 
+  def get_token do
     base_encoded = Base.encode64(@client_id <> ":" <> @client_secret)
-    res = HTTPoison.post! @auth_url, "grant_type=client_credentials", 
+    res = HTTPoison.post! @auth_url, "grant_type=client_credentials",
       [{"Authorization", "Basic #{base_encoded}"}]
     res_decoded = Poison.decode! res.body
     ~s("Bearer #{res_decoded["access_token"]})
