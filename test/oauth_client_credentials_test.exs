@@ -14,12 +14,12 @@ defmodule OauthClientCredentialsTest do
     Bypass.expect bypass, fn conn ->
       assert "POST" == conn.method
       conn
-        |> Plug.Conn.resp(200, ~s({"access_token": "abcdef"}))
+        |> Plug.Conn.resp(200, ~s({"access_token": "abcdef=="}))
     end
 
     token = OauthClientCredentials.get_token %{token_url: url,
       client_id: "123", client_secret: "456"}
 
-    assert token == "Bearer abcdef"
+    assert token == "Bearer abcdef=="
   end
 end
