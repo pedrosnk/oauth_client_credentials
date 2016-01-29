@@ -1,9 +1,9 @@
 defmodule OauthClientCredentials.Token do
 
-  BEARER_TOKEN = "Bearer"
+  @bearer_token "Bearer"
 
-  def get do
-    base_encoded = Base.encode64(id <> ":" <> secret)
+  def get client_id, client_secret, token_url do
+    base_encoded = Base.encode64(client_id <> ":" <> client_secret)
 
     response = HTTPoison.post token_url, "grant_type=cient_credentials",
       [{"Authorization", "Basic #{base_encoded}"},
@@ -11,12 +11,12 @@ defmodule OauthClientCredentials.Token do
 
     res_decoded = case response do
       {:ok, %HTTPoison.Response{body: body} } ->
-        res_decoded = Poison.decode! res.body
+        Poison.decode! body
       {:error, %HTTPoison.Error{reason: reason} } ->
-        res_decoded = Poison.decode! %{error: "Error fetching the token"}
+        Poison.decode! %{error: "Error fetching the token: #{reason}" }
     end
 
-    "#{BEARER_TOKEN} #{res_decoded["access_token"]}"
+    "#{@bearer_token} #{res_decoded["access_token"]}"
   end
 
 
